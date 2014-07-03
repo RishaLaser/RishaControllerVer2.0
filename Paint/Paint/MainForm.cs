@@ -178,14 +178,15 @@ namespace Paint
                 if (data == "Establishing contact..")
                 {
                     //System.Threading.Thread.Sleep(1000);
-                    _serialPort.Write("A\n");
+                    //_serialPort.Write("A\n");
                     lblstatus.Text = "Established contact..";
                 }
                 if (data == "A")
                 {
                     //System.Threading.Thread.Sleep(1000);
-                    //_serialPort.Write("A\n");
+                    _serialPort.Write("A\n");
                     lblstatus.Text = "Rastering...";
+
 
                 }
                 if (data == "1")
