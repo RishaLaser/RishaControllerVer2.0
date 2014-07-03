@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -108,6 +108,7 @@ namespace Paint
                 if (SendRaster(data)) //Ended sending raster code
                 {
                     //Send vector code
+
                     BeginSendVector();
                 }
 
@@ -145,6 +146,10 @@ namespace Paint
                     }
                     else
                     {
+
+                        _serialPort.Write("raster\n");
+
+
                         vectoring = false;
                         line = 0;
                         //lblgcode.Text = "";
@@ -153,6 +158,7 @@ namespace Paint
                         btndraw.Enabled = true;
                         progressbar.Visible = false;
                         lblstatus.Text = "Done";
+
                     }
 
                 }
@@ -187,12 +193,6 @@ namespace Paint
                     counter++;
                     _serialPort.Write((lines[counter - 1].Length + 10) + "\n");
 
-                    if (counter - 1 >= totalsteps)
-                    {
-                        MessageBox.Show("Done");
-                        rastering = false;
-                        progressbar.Visible = false;
-                    }
 
                 }
                 if (data == "2")
@@ -204,10 +204,25 @@ namespace Paint
 
                     if (counter - 1 == lines.Count() - 1)
                     {
+                        MessageBox.Show("Done");
+                        rastering = false;
+                        progressbar.Visible = false;
+                        _serialPort.Write("r\n");
                         btndraw.Enabled = true;
                         return true; //Ended all raster
                     }
                 }
+
+                if (lines[counter - 1] == "r")
+                {
+                    MessageBox.Show("Done");
+                    rastering = false;
+                    progressbar.Visible = false;
+                    _serialPort.Write("r\n");
+                    btndraw.Enabled = true;
+                    return true; //Ended all raster
+                }
+
 
             }
             catch (Exception ex)
@@ -627,10 +642,29 @@ namespace Paint
 
         private void BeginSendRaster()
         {
-            string rastercode = GenerateRasterCode();
-            _serialPort.Write("raster\n");
-            lines = rastercode.Split(',');
-            totalsteps = lines.Length;
+
+            List<ColorCode> t = new List<ColorCode>();
+            foreach (ColorCode cc in Colors)
+            {
+                if (cc.Type == ColorCode.ColorType.Raster)
+                {
+                    t.Add(cc);
+                }
+            }
+            if (t.Count != 0)
+            {
+                string rastercode = GenerateRasterCode();
+                _serialPort.Write("raster\n");
+                lines = rastercode.Split(',');
+                totalsteps = lines.Length;
+            }
+            else
+            {
+                BeginSendVector();
+            }
+
+
+
         }
         private void BeginSendVector()
         {
