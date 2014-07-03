@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -143,7 +143,7 @@ namespace Paint
             string outputfile = "";
             StringBuilder buffer = new StringBuilder();
             int i = 1;
-            while (i < (MainForm.IMAGE_WIDTH - 3))
+            while (i < (MainForm.IMAGE_WIDTH - 1))
             {
                 //left to right
                 int k = 1;
